@@ -12,28 +12,14 @@ img{
     text-align: center;
 }
 
-.gallery-container{
-    width: 100%;
-    padding: 0 15px;
-    margin: 0 auto;
-}
-
 .gallery{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 16px;
     margin-top: 24px;
-}
-
-.photo-card{
-    width: calc((100% - 16px) / 2);
-    border: 1 solid black;
-    margin: 0 auto;
-    
-}
-
-.gallery-link{
-    max-width: 640px;
+    align-items: center;
+    justify-content: center;
 }
 
 .info{
@@ -41,4 +27,15 @@ img{
     display: flex;
     gap: 40px;
     padding-left: 15px;
+}
+
+.load-more{
+    display: block;
+    width: 200px;
+    height: 32px;
+    color: white;
+    background-color: royalblue;
+    border: none;
+    border-radius: 45%;
+    margin: 16px auto;
 }

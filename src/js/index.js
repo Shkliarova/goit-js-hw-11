@@ -9,28 +9,35 @@ const API_KEY = '39799799-b8751a2dca689677868dbdc1d';
 const form = document.querySelector('.search-form');
 const input = form.querySelector('[name = "searchQuery"]');
 const gallery = document.querySelector('.gallery');
+const button = document.querySelector('.load-more');
+
+button.style.display = 'none';
+let page = 1;
 
 form.addEventListener('submit', onSubmit);
+button.addEventListener('click', onButtonClick);
 
  async function onSubmit(event){
     event.preventDefault();
+    page = 1;
 
-    const params = new URLSearchParams({
+    const params = {
         key: API_KEY,
         q: input.value,
         image_type: 'photo',
         orientation: 'horizontal',
-        safesearch: true
-    });
+        safesearch: true,
+        per_page: 40
+    };
 
     try {
-        const response = await fetch(`${BASE_URL}?${params}`);
+        const response = await axios.get(BASE_URL, { params });
 
-        if(!response.ok){
+        if(response.status !== 200){
             throw new Error(response.statusText);
         }
 
-        const data = await response.json();
+        const data = response.data;
 
         if (data.hits.length === 0) {
             gallery.innerHTML = '';
@@ -39,6 +46,12 @@ form.addEventListener('submit', onSubmit);
             );
           } else {
             gallery.innerHTML = createMarkup(data.hits);
+
+            if (data.totalHits > page * 40) {
+                button.style.display = 'block';
+            } else {
+                button.style.display = 'none';
+            }
 
             new SimpleLightbox('.gallery a', {
                close: true
@@ -74,3 +87,42 @@ function createMarkup(arr){
     ).join('');
 }
 
+async function onButtonClick(){
+    page++;
+
+    const params = {
+        key: API_KEY,
+        q: input.value,
+        image_type: 'photo',
+        orientation: 'horizontal',
+        safesearch: true,
+        per_page: 40,
+        page
+    };
+
+    try {
+        const response = await axios.get(BASE_URL, { params });
+
+        if(response.status !== 200){
+            throw new Error(response.statusText);
+        }
+
+        const data = response.data;
+
+        if (data.hits.length === 0) {
+            Notiflix.Notify.failure(
+              "We're sorry, but you've reached the end of search results."
+            );
+            button.style.display = 'none';
+          } else {
+            gallery.innerHTML += createMarkup(data.hits);
+
+            new SimpleLightbox('.gallery a', {
+               close: true
+            });
+          }
+
+    } catch(error) {
+        Notiflix.Notify.failure('An error occurred while fetching data. Please try again later.');
+    }
+}
