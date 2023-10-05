@@ -25,7 +25,8 @@ img{
 .info{
     max-width: 625px;
     display: flex;
-    gap: 40px;
+    gap: 20px;
+    font-size: small;
     padding-left: 15px;
 }
 
@@ -38,4 +39,5 @@ img{
     border: none;
     border-radius: 45%;
     margin: 16px auto;
+    cursor: pointer;
 }
